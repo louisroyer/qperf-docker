@@ -17,7 +17,7 @@ services:
       - WORKDIR=/qperf
         # Change this to $(id -u):$(id -g)
       - OWNER=1000:1000
-    command: -s -t 40
+    command: -s
     networks:
       qperf-net:
         ipv4_address: 10.0.1.2
