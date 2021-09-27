@@ -1,0 +1,58 @@
+version: "3.8"
+services:
+  qperf-server:
+    container_name: qperf-server
+    hostname: qperf-server
+    build:
+      context: .
+      target: qperf
+      args:
+        QPERF_COMMIT: 1d9c79fa4ecaab5d7a439de72e4d8db3fb7cd54e
+    image: qperf
+    volumes:
+      - ./server-entrypoint.sh:/usr/local/bin/server-entrypoint.sh:ro
+      - ./server:/qperf
+    environment:
+      - ENTRYPOINT=server-entrypoint.sh
+      - WORKDIR=/qperf
+        # Change this to $(id -u):$(id -g)
+      - OWNER=1000:1000
+    command: -s -t 40
+    networks:
+      qperf-net:
+        ipv4_address: 10.0.1.2
+
+  qperf-client:
+    container_name: qperf-client
+    hostname: qperf-client
+    build:
+      context: .
+      target: qperf
+      args:
+        QPERF_COMMIT: 1d9c79fa4ecaab5d7a439de72e4d8db3fb7cd54e
+    image: qperf
+    volumes:
+      - ./client-entrypoint.sh:/usr/local/bin/client-entrypoint.sh:ro
+      - ./client-exitpoint.sh:/usr/local/bin/client-exitpoint.sh:ro
+      - ./client:/qperf
+    environment:
+      - ENTRYPOINT=client-entrypoint.sh
+      - STARTUP_SLEEP=5
+      - EXITPOINT=client-exitpoint.sh
+        # Change this to $(id -u):$(id -g)
+      - OWNER=1000:1000
+    command: -c qperf-server.qperf-net -e -l /qperf/tls-secret.log
+    networks:
+      qperf-net:
+        ipv4_address: 10.0.1.3
+
+networks:
+  qperf-net:
+    name: qperf-net
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-qperf-net
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.1.0/24
