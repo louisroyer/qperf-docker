@@ -7,7 +7,7 @@ services:
       context: .
       target: qperf
       args:
-        QPERF_COMMIT: 1d9c79fa4ecaab5d7a439de72e4d8db3fb7cd54e
+        QPERF_COMMIT: 493f240454391c31c69defd1528cf05246ae130f
     image: qperf
     volumes:
       - ./server-entrypoint.sh:/usr/local/bin/server-entrypoint.sh:ro
@@ -29,7 +29,7 @@ services:
       context: .
       target: qperf
       args:
-        QPERF_COMMIT: 1d9c79fa4ecaab5d7a439de72e4d8db3fb7cd54e
+        QPERF_COMMIT: 493f240454391c31c69defd1528cf05246ae130f
     image: qperf
     volumes:
       - ./client-entrypoint.sh:/usr/local/bin/client-entrypoint.sh:ro
